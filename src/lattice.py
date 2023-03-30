@@ -8,6 +8,7 @@ class Lattice:
         else:
             raise RuntimeError("Do not know how to initialize Lattice from supplied parameters")
 
+    @staticmethod
     def __vectors_are_valid(a_vec, b_vec, c_vec) -> bool:
         def is_ok(vector) -> bool:
             if vector is None:
@@ -46,7 +47,10 @@ class Lattice:
 
 
 class LatticeBuilder:
-    def constructFromScalars(a: float, b: float, c: float, alpha: float, beta: float, gamma: float) -> Lattice:
+    @staticmethod
+    def construct_from_scalars(
+        a: float, b: float, c: float, alpha: float, beta: float, gamma: float  # pylint: disable=invalid-name
+    ) -> Lattice:
         if not LatticeBuilder.__scalars_are_valid(a, b, c, alpha, beta, gamma):
             raise RuntimeError("scalar values are invalid")
 
@@ -69,8 +73,12 @@ class LatticeBuilder:
 
         return Lattice(a_vec, b_vec, c_vec)
 
-    def __scalars_are_valid(a: float, b: float, c: float, alpha: float, beta: float, gamma: float) -> bool:
+    @staticmethod
+    def __scalars_are_valid(
+        a: float, b: float, c: float, alpha: float, beta: float, gamma: float  # pylint: disable=invalid-name
+    ) -> bool:
         return a > 0 and b > 0 and c > 0 and alpha > 0 and beta > 0 and gamma > 0
 
-    def constructFromVectors(a_vec, b_vec, c_vec) -> Lattice:
+    @staticmethod
+    def construct_from_vectors(a_vec, b_vec, c_vec) -> Lattice:
         return Lattice(a_vec, b_vec, c_vec)

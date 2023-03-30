@@ -15,10 +15,10 @@ def assert_dotprod(left, right, angle):
 
 
 def test_vector_cubic():
-    a, b, c = 1, 1, 1
+    a, b, c = 1, 1, 1  # pylint: disable=invalid-name
     alpha, beta, gamma = 90, 90, 90
 
-    lattice = LatticeBuilder.constructFromScalars(a, b, c, alpha, beta, gamma)
+    lattice = LatticeBuilder.construct_from_scalars(a, b, c, alpha, beta, gamma)
 
     nptest.assert_allclose(lattice.a_vec, [a, 0, 0], atol=0.00001)
     nptest.assert_allclose(lattice.b_vec, [0, b, 0], atol=0.00001)
@@ -30,10 +30,10 @@ def test_vector_cubic():
 
 
 def test_vector_hexagonal():
-    a, b, c = 1, 1, 3
+    a, b, c = 1, 1, 3  # pylint: disable=invalid-name
     alpha, beta, gamma = 90, 90, 120
 
-    lattice = LatticeBuilder.constructFromScalars(a, b, c, alpha, beta, gamma)
+    lattice = LatticeBuilder.construct_from_scalars(a, b, c, alpha, beta, gamma)
 
     nptest.assert_allclose(lattice.a_vec, [a, 0, 0], atol=0.00001)
     nptest.assert_allclose(lattice.b_vec[2], 0, atol=0.00001)
@@ -46,10 +46,10 @@ def test_vector_hexagonal():
 
 
 def test_vector_monoclinic():
-    a, b, c = 1, 2, 3
+    a, b, c = 1, 2, 3  # pylint: disable=invalid-name
     alpha, beta, gamma = 60, 70, 80
 
-    lattice = LatticeBuilder.constructFromScalars(a, b, c, alpha, beta, gamma)
+    lattice = LatticeBuilder.construct_from_scalars(a, b, c, alpha, beta, gamma)
 
     nptest.assert_allclose(lattice.a_vec, [a, 0, 0], atol=0.00001)
     nptest.assert_allclose(np.dot(lattice.b_vec, lattice.b_vec), b * b, atol=0.00001)
@@ -66,10 +66,10 @@ def test_vector_monoclinic():
     ids=("cubic", "hexagonal", "triclinic"),
 )
 def test_reciprocal_roundtrip(lattice_constants):
-    a, b, c = lattice_constants[:3]
+    a, b, c = lattice_constants[:3]  # pylint: disable=invalid-name
     alpha, beta, gamma = lattice_constants[3:]
 
-    lattice = LatticeBuilder.constructFromScalars(a, b, c, alpha, beta, gamma)
+    lattice = LatticeBuilder.construct_from_scalars(a, b, c, alpha, beta, gamma)
 
     reciprocal = lattice.reciprocal()
 
