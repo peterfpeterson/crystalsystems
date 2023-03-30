@@ -30,6 +30,24 @@ class Lattice:
     def volume(self) -> float:
         return np.dot(self.a_vec, np.cross(self.b_vec, self.c_vec))
 
+    def scalar_lattice_constants(self):
+        # lengths are easy
+        a_length = np.sqrt(np.dot(self.a_vec, self.a_vec))
+        b_length = np.sqrt(np.dot(self.b_vec, self.b_vec))
+        c_length = np.sqrt(np.dot(self.c_vec, self.c_vec))
+
+        def to_angle(left, right, left_length, right_length):
+            cos_angle = np.dot(left, right) / (left_length * right_length)
+            return np.rad2deg(np.arccos(cos_angle))
+
+        # angles are a little more interesting as a dot product of zero means
+        # the lattices are perpendicular
+        alpha = to_angle(self.b_vec, self.c_vec, b_length, c_length)
+        beta = to_angle(self.a_vec, self.c_vec, a_length, c_length)
+        gamma = to_angle(self.a_vec, self.b_vec, a_length, b_length)
+
+        return (a_length, b_length, c_length, alpha, beta, gamma)
+
     def reciprocal(self):
         # cache the value
         volume = self.volume

@@ -14,6 +14,16 @@ def assert_dotprod(left, right, angle):
     nptest.assert_allclose(dotprod, cos_value, atol=0.00001)
 
 
+def check_scalar_constants(lattice, a, b, c, alpha, beta, gamma):
+    obs_constants = lattice.scalar_lattice_constants()
+    nptest.assert_allclose(obs_constants[0], a)
+    nptest.assert_allclose(obs_constants[1], b)
+    nptest.assert_allclose(obs_constants[2], c)
+    nptest.assert_allclose(obs_constants[3], alpha)
+    nptest.assert_allclose(obs_constants[4], beta)
+    nptest.assert_allclose(obs_constants[5], gamma)
+
+
 def test_vector_cubic():
     a, b, c = 1, 1, 1  # pylint: disable=invalid-name
     alpha, beta, gamma = 90, 90, 90
@@ -27,6 +37,8 @@ def test_vector_cubic():
     assert_dotprod(lattice.a_vec, lattice.b_vec, 90.0)
     assert_dotprod(lattice.a_vec, lattice.c_vec, 90.0)
     assert_dotprod(lattice.b_vec, lattice.c_vec, 90.0)
+
+    check_scalar_constants(lattice, a, b, c, alpha, beta, gamma)
 
 
 def test_vector_hexagonal():
@@ -44,6 +56,8 @@ def test_vector_hexagonal():
     assert_dotprod(lattice.a_vec, lattice.c_vec, beta)
     assert_dotprod(lattice.b_vec, lattice.c_vec, alpha)
 
+    check_scalar_constants(lattice, a, b, c, alpha, beta, gamma)
+
 
 def test_vector_monoclinic():
     a, b, c = 1, 2, 3  # pylint: disable=invalid-name
@@ -58,6 +72,8 @@ def test_vector_monoclinic():
     assert_dotprod(lattice.a_vec, lattice.b_vec, gamma)
     assert_dotprod(lattice.a_vec, lattice.c_vec, beta)
     assert_dotprod(lattice.b_vec, lattice.c_vec, alpha)
+
+    check_scalar_constants(lattice, a, b, c, alpha, beta, gamma)
 
 
 @pytest.mark.parametrize(
