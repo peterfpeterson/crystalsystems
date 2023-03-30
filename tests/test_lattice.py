@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import numpy.testing as nptest
 
-from lattice import calc_reciprocal, to_vector
+from lattice import Lattice
 
 
 def assert_dotprod(left, right, angle):
@@ -18,61 +18,66 @@ def test_vector_cubic():
     a, b, c = 1, 1, 1
     alpha, beta, gamma = 90, 90, 90
 
-    a_vec, b_vec, c_vec = to_vector(a, b, c, alpha, beta, gamma)
+    lattice = Lattice(a, b, c, alpha, beta, gamma)
 
-    nptest.assert_allclose(a_vec, [a, 0, 0], atol=0.00001)
-    nptest.assert_allclose(b_vec, [0, b, 0], atol=0.00001)
-    nptest.assert_allclose(c_vec, [0, 0, c], atol=0.00001)
+    nptest.assert_allclose(lattice.a_vec, [a, 0, 0], atol=0.00001)
+    nptest.assert_allclose(lattice.b_vec, [0, b, 0], atol=0.00001)
+    nptest.assert_allclose(lattice.c_vec, [0, 0, c], atol=0.00001)
 
-    assert_dotprod(a_vec, b_vec, 90.0)
-    assert_dotprod(a_vec, c_vec, 90.0)
-    assert_dotprod(b_vec, c_vec, 90.0)
+    assert_dotprod(lattice.a_vec, lattice.b_vec, 90.0)
+    assert_dotprod(lattice.a_vec, lattice.c_vec, 90.0)
+    assert_dotprod(lattice.b_vec, lattice.c_vec, 90.0)
 
 
 def test_vector_hexagonal():
     a, b, c = 1, 1, 3
     alpha, beta, gamma = 90, 90, 120
 
-    a_vec, b_vec, c_vec = to_vector(a, b, c, alpha, beta, gamma)
+    lattice = Lattice(a, b, c, alpha, beta, gamma)
 
-    nptest.assert_allclose(a_vec, [a, 0, 0], atol=0.00001)
-    nptest.assert_allclose(b_vec[2], 0, atol=0.00001)
-    nptest.assert_allclose(np.dot(b_vec, b_vec), b * b, atol=0.00001)
-    nptest.assert_allclose(c_vec, [0, 0, c], atol=0.00001)
+    nptest.assert_allclose(lattice.a_vec, [a, 0, 0], atol=0.00001)
+    nptest.assert_allclose(lattice.b_vec[2], 0, atol=0.00001)
+    nptest.assert_allclose(np.dot(lattice.b_vec, lattice.b_vec), b * b, atol=0.00001)
+    nptest.assert_allclose(lattice.c_vec, [0, 0, c], atol=0.00001)
 
-    assert_dotprod(a_vec, b_vec, gamma)
-    assert_dotprod(a_vec, c_vec, beta)
-    assert_dotprod(b_vec, c_vec, alpha)
+    assert_dotprod(lattice.a_vec, lattice.b_vec, gamma)
+    assert_dotprod(lattice.a_vec, lattice.c_vec, beta)
+    assert_dotprod(lattice.b_vec, lattice.c_vec, alpha)
 
 
 def test_vector_monoclinic():
     a, b, c = 1, 2, 3
     alpha, beta, gamma = 60, 70, 80
 
-    a_vec, b_vec, c_vec = to_vector(a, b, c, alpha, beta, gamma)
+    lattice = Lattice(a, b, c, alpha, beta, gamma)
 
-    nptest.assert_allclose(a_vec, [a, 0, 0], atol=0.00001)
-    nptest.assert_allclose(np.dot(b_vec, b_vec), b * b, atol=0.00001)
-    nptest.assert_allclose(np.dot(c_vec, c_vec), c * c, atol=0.00001)
+    nptest.assert_allclose(lattice.a_vec, [a, 0, 0], atol=0.00001)
+    nptest.assert_allclose(np.dot(lattice.b_vec, lattice.b_vec), b * b, atol=0.00001)
+    nptest.assert_allclose(np.dot(lattice.c_vec, lattice.c_vec), c * c, atol=0.00001)
 
-    assert_dotprod(a_vec, b_vec, gamma)
-    assert_dotprod(a_vec, c_vec, beta)
-    assert_dotprod(b_vec, c_vec, alpha)
+    assert_dotprod(lattice.a_vec, lattice.b_vec, gamma)
+    assert_dotprod(lattice.a_vec, lattice.c_vec, beta)
+    assert_dotprod(lattice.b_vec, lattice.c_vec, alpha)
 
 
 def test_reciprocal():
     a, b, c = 1, 1, 1
     alpha, beta, gamma = 90, 90, 90
 
-    recip = calc_reciprocal(a, b, c, alpha, beta, gamma)
+    lattice = Lattice(a, b, c, alpha, beta, gamma)
+    reciprocal = lattice.reciprocal()
 
-    found = calc_reciprocal(*recip)
-    assert found[0] == a
-    assert found[1] == b
-    assert found[2] == c
-    assert found[3] == alpha
-    assert found[4] == beta
-    assert found[5] == gamma
+    backtoorig = reciprocal.reciprocal()
+
+    lattice.assert_allclose(backtoorig)
+
+    # found = calc_reciprocal(*recip)
+    # assert found[0] == a
+    # assert found[1] == b
+    # assert found[2] == c
+    # assert found[3] == alpha
+    # assert found[4] == beta
+    # assert found[5] == gamma
 
 
 if __name__ == "__main__":
