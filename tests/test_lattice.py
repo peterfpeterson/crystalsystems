@@ -1,7 +1,6 @@
-import pytest
 import numpy as np
 import numpy.testing as nptest
-
+import pytest
 from lattice import LatticeBuilder
 
 
