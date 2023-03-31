@@ -10,5 +10,4 @@ Developers
 conda env create -f environment.yml
 conda activate crystalsystems
 pre-commit install
-pre-commit install --hook-type pre-push
 ```

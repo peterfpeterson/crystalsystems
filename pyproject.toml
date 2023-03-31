@@ -23,15 +23,11 @@ where = ["src"]
 [tool.versioningit.write]
 file = "src/imars3d/_version.py"
 
-[tool.pylint]
-max-line-length = 120
-disable = ["too-many-statements",
-           "too-many-instance-attributes",
-           "too-many-arguments",
-           "duplicate-code",
-           "missing-module-docstring",
-           "missing-function-docstring","missing-class-docstring"
-]
+[tool.ruff]
+line-length = 120
+# https://beta.ruff.rs/docs/rules/
+select = ["A", "ARG", "BLE", "E", "F", "I", "PT"]
+ignore = []
 
 [tool.pytest.ini_options]
 pythonpath = [
