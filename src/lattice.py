@@ -58,6 +58,46 @@ class Lattice:
 
         return Lattice(a_vec=a_vec, b_vec=b_vec, c_vec=c_vec)
 
+    def toQCrysSq(self, h_val, k_val, l_val):
+        """Calculate the Qcrys making the assumption that this is the direct space lattice"""
+        matrix = self.toB()
+        vec = np.dot(matrix, [h_val, k_val, l_val])
+
+        return np.dot(vec, vec)
+
+    def toTestConstants(self, h_val, k_val, l_val):
+        # cache the reciprocal lattice
+        recip = self.reciprocal()
+
+        hh = h_val * h_val * np.dot(recip.a_vec, recip.a_vec)
+        kk = k_val * k_val * np.dot(recip.b_vec, recip.b_vec)
+        ll = l_val * l_val * np.dot(recip.c_vec, recip.c_vec)
+        hk = 2 * h_val * k_val * np.dot(recip.a_vec, recip.b_vec)
+        hl = 2 * h_val * l_val * np.dot(recip.a_vec, recip.c_vec)
+        kl = 2 * k_val * l_val * np.dot(recip.b_vec, recip.c_vec)
+
+        return np.asarray((hh, kk, ll, hk, hl, kl))
+
+    def toB(self):
+        """Calculates the B-matrix with the assumption that this is the direct-space lattice"""
+        reciprocal = self.reciprocal()
+        astar, bstar, cstar, alphastar, betastar, gammastar = reciprocal.scalar_lattice_constants()
+
+        cos_alpha = np.cos(np.deg2rad(alphastar))
+        cos_beta = np.cos(np.deg2rad(betastar))
+        sin_beta = np.sin(np.deg2rad(betastar))
+        cos_gamma = np.cos(np.deg2rad(gammastar))
+        sin_gamma = np.sin(np.deg2rad(gammastar))
+
+        _, _, c_length, _, _, _ = self.scalar_lattice_constants()
+
+        matrix = [
+            [astar, bstar * cos_gamma, cstar * cos_beta],
+            [0, bstar * sin_gamma, -1 * cstar * sin_beta * cos_alpha],
+            [0, 0, 1 / c_length],
+        ]
+        return np.asarray(matrix)
+
     def assert_allclose(self, other, atol=0.00001):
         np.testing.assert_allclose(self.a_vec, other.a_vec, atol=atol)
         np.testing.assert_allclose(self.b_vec, other.b_vec, atol=atol)
@@ -96,6 +136,29 @@ class LatticeBuilder:
         a: float, b: float, c: float, alpha: float, beta: float, gamma: float  # pylint: disable=invalid-name
     ) -> bool:
         return a > 0 and b > 0 and c > 0 and alpha > 0 and beta > 0 and gamma > 0
+
+    # TODO should this use the residuals?
+    @staticmethod
+    def from_solution(solution) -> Lattice:
+        # lengths are easy
+        a_star = np.sqrt(solution[0])
+        b_star = np.sqrt(solution[1])
+        c_star = np.sqrt(solution[2])
+
+        # get the angles
+        alpha_star = 90.0
+        beta_star = 90.0
+        gamma_star = 90.0
+
+        # create the reciprocal lattice
+        recip = LatticeBuilder.construct_from_scalars(a_star, b_star, c_star, alpha_star, beta_star, gamma_star)
+
+        # reciprocal of that is the real space lattice
+        return recip.reciprocal()
+
+    @staticmethod
+    def construct_cubic(a: float) -> Lattice:  # pylint: disable=invalid-name
+        return LatticeBuilder.construct_from_scalars(a, a, a, 90, 90, 90)
 
     @staticmethod
     def construct_from_vectors(a_vec, b_vec, c_vec) -> Lattice:

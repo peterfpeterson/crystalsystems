@@ -58,7 +58,7 @@ def test_vector_hexagonal():
     check_scalar_constants(lattice, a, b, c, alpha, beta, gamma)
 
 
-def test_vector_monoclinic():
+def test_vector_triclinic():
     a, b, c = 1, 2, 3  # pylint: disable=invalid-name
     alpha, beta, gamma = 60, 70, 80
 
@@ -91,6 +91,21 @@ def test_reciprocal_roundtrip(lattice_constants):
     backtoorig = reciprocal.reciprocal()
 
     lattice.assert_allclose(backtoorig)
+
+
+def test_b_matrix():
+    a, b, c = 1, 1, 1  # pylint: disable=invalid-name
+    alpha, beta, gamma = 90, 90, 90
+
+    lattice = LatticeBuilder.construct_from_scalars(a, b, c, alpha, beta, gamma)
+    matrix = lattice.toB()
+    assert matrix.size == 9
+    assert matrix.shape == (3, 3)
+
+    print("****", np.dot(matrix, [1, 0, 0]))
+    print("****", np.dot(matrix, [0, 1, 0]))
+    print("****", np.dot(matrix, [0, 0, 1]))
+    # TODO test results
 
 
 if __name__ == "__main__":
