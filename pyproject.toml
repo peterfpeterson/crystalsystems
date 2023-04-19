@@ -29,6 +29,9 @@ line-length = 120
 select = ["A", "ARG", "BLE", "E", "F", "I", "PT"]
 ignore = []
 
+[project.scripts]
+crystalsystems = "crystalsystems.__main__:main"
+
 [tool.pytest.ini_options]
 pythonpath = [
   ".", "src", "scripts"

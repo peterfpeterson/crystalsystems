@@ -30,3 +30,8 @@ jobs:
       run: |
         python -m build --wheel --no-isolation
         check-wheel-contents dist/crystalsystems-*.whl
+    - name: Command line
+      run: |
+        pip install -e .
+        python -m crystalsystems --help
+        crystalsystems --help

@@ -11,4 +11,5 @@ Developers
 conda env create -f environment.yml
 conda activate crystalsystems
 pre-commit install
+pip install -e . # editable install
 ```
