@@ -62,12 +62,12 @@ class Lattice:
 
         return Lattice(a_vec=a_vec, b_vec=b_vec, c_vec=c_vec)
 
-    def toQCrysSq(self, h_val, k_val, l_val):
+    def toDspacing(self, h_val, k_val, l_val):
         """Calculate the Qcrys making the assumption that this is the direct space lattice"""
         matrix = self.toB()
         vec = np.dot(matrix, [h_val, k_val, l_val])
 
-        return np.dot(vec, vec)
+        return 1.0 / np.sqrt(np.dot(vec, vec))
 
     def toB(self):
         """Calculates the B-matrix with the assumption that this is the direct-space lattice"""
