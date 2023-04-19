@@ -44,7 +44,7 @@ def test_vector_hexagonal():
     a, b, c = 1, 1, 3  # pylint: disable=invalid-name
     alpha, beta, gamma = 90, 90, 120
 
-    lattice = LatticeBuilder.construct_from_scalars(a, b, c, alpha, beta, gamma)
+    lattice = LatticeBuilder.construct_hexagonal(a, c)
 
     nptest.assert_allclose(lattice.a_vec, [a, 0, 0], atol=0.00001)
     nptest.assert_allclose(lattice.b_vec[2], 0, atol=0.00001)

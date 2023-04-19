@@ -22,13 +22,24 @@ class Lattice:
     def set_vectors(self, a_vec, b_vec, c_vec):
         if not Lattice.__vectors_are_valid(a_vec, b_vec, c_vec):
             raise ValueError("Vector values are invalid")
-        self.a_vec = np.asarray(a_vec)
-        self.b_vec = np.asarray(b_vec)
-        self.c_vec = np.asarray(c_vec)
+        self.a_vec = np.asarray(a_vec, dtype=float)
+        self.b_vec = np.asarray(b_vec, dtype=float)
+        self.c_vec = np.asarray(c_vec, dtype=float)
+        # set things that are almost zero to zero
+        self.a_vec[np.isclose(self.a_vec, 0.0)] = 0.0
+        self.b_vec[np.isclose(self.b_vec, 0.0)] = 0.0
+        self.c_vec[np.isclose(self.c_vec, 0.0)] = 0.0
 
     @property
     def volume(self) -> float:
         return np.dot(self.a_vec, np.cross(self.b_vec, self.c_vec))
+
+    def __imul__(self, scalar: float):
+        print("-->", scalar)
+        self.a_vec *= float(scalar)
+        self.b_vec *= float(scalar)
+        self.c_vec *= float(scalar)
+        return self
 
     def scalar_lattice_constants(self):
         # lengths are easy
@@ -68,6 +79,10 @@ class Lattice:
     def toTestConstants(self, h_val, k_val, l_val):
         # cache the reciprocal lattice
         recip = self.reciprocal()
+
+        # print('a*', recip.a_vec)
+        # print('b*', recip.b_vec)
+        # print('c*', recip.c_vec)
 
         hh = h_val * h_val * np.dot(recip.a_vec, recip.a_vec)
         kk = k_val * k_val * np.dot(recip.b_vec, recip.b_vec)
@@ -159,6 +174,10 @@ class LatticeBuilder:
     @staticmethod
     def construct_cubic(a: float) -> Lattice:  # pylint: disable=invalid-name
         return LatticeBuilder.construct_from_scalars(a, a, a, 90, 90, 90)
+
+    @staticmethod
+    def construct_hexagonal(a: float, c: float) -> Lattice:  # pylint: disable=invalid-name
+        return LatticeBuilder.construct_from_scalars(a, a, c, 90, 90, 120)
 
     @staticmethod
     def construct_from_vectors(a_vec, b_vec, c_vec) -> Lattice:
