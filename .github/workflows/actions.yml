@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [next]
+    tags: ['v*']
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+
+    - uses: actions/checkout@v3
+    - name: Set up Miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        channels: conda-forge,defaults
+        mamba-version: "*"
+        environment-file: environment.yml
+        activate-environment: crystalsystems
+    - name: Restore cached conda environment
+      id: cache-load
+      uses: actions/cache/restore@v3
+      with:
+        path: /usr/share/miniconda/envs/crystalsystems
+        key: ${{ runner.os }}-conda-${{ hashFiles('**/environment.yml') }}
+    - name: Load Environment
+      if: steps.cache-load.outputs.cache-hit != 'true'
+      run: |
+        mamba env update --file environment.yml  --prune
+    - name: Test with pytest
+      run: |
+        python -m pytest
+      # xvfb-run -a python -m pytest --cov=srv --cov-report=xml --cov-report=term
+    #- name: Upload coverage reports
+    #  uses: codecov/codecov-action@v3
