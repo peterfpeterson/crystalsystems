@@ -22,16 +22,6 @@ jobs:
         mamba-version: "*"
         environment-file: environment.yml
         activate-environment: crystalsystems
-    - name: Restore cached conda environment
-      id: cache-load
-      uses: actions/cache/restore@v3
-      with:
-        path: /usr/share/miniconda/envs/crystalsystems
-        key: ${{ runner.os }}-conda-${{ hashFiles('**/environment.yml') }}
-    - name: Load Environment
-      if: steps.cache-load.outputs.cache-hit != 'true'
-      run: |
-        mamba env update --file environment.yml  --prune
     - name: Run tests
       run: python -m pytest --cov=src --cov-report=xml --cov-report=term
     - name: Upload coverage reports to Codecov
