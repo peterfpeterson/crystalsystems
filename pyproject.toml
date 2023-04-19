@@ -21,7 +21,7 @@ default-tag = "0.0.1"
 where = ["src"]
 
 [tool.versioningit.write]
-file = "src/imars3d/_version.py"
+file = "src/crystalsystems/_version.py"
 
 [tool.ruff]
 line-length = 120

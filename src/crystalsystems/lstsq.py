@@ -1,5 +1,6 @@
 import numpy as np
-from lattice import LatticeBuilder
+
+from crystalsystems.lattice import LatticeBuilder
 
 
 def toSolverConstants(h_val, k_val, l_val):

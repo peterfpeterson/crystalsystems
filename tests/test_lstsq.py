@@ -1,6 +1,6 @@
 import pytest
-from lattice import LatticeBuilder
-from lstsq import getLattice
+from crystalsystems.lattice import LatticeBuilder
+from crystalsystems.lstsq import getLattice
 
 
 @pytest.mark.parametrize("a", [1, 2])
