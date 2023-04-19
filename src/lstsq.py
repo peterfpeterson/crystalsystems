@@ -6,9 +6,9 @@ def toSolverConstants(h_val, k_val, l_val):
     hh = h_val * h_val
     kk = k_val * k_val
     ll = l_val * l_val
-    hk = 2 * h_val * k_val
-    hl = 2 * h_val * l_val
-    kl = 2 * k_val * l_val
+    hk = h_val * k_val
+    hl = h_val * l_val
+    kl = k_val * l_val
 
     return (hh, kk, ll, hk, hl, kl)
 

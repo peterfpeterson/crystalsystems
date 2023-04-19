@@ -34,13 +34,6 @@ class Lattice:
     def volume(self) -> float:
         return np.dot(self.a_vec, np.cross(self.b_vec, self.c_vec))
 
-    def __imul__(self, scalar: float):
-        print("-->", scalar)
-        self.a_vec *= float(scalar)
-        self.b_vec *= float(scalar)
-        self.c_vec *= float(scalar)
-        return self
-
     def scalar_lattice_constants(self):
         # lengths are easy
         a_length = np.sqrt(np.dot(self.a_vec, self.a_vec))
@@ -76,23 +69,6 @@ class Lattice:
 
         return np.dot(vec, vec)
 
-    def toTestConstants(self, h_val, k_val, l_val):
-        # cache the reciprocal lattice
-        recip = self.reciprocal()
-
-        # print('a*', recip.a_vec)
-        # print('b*', recip.b_vec)
-        # print('c*', recip.c_vec)
-
-        hh = h_val * h_val * np.dot(recip.a_vec, recip.a_vec)
-        kk = k_val * k_val * np.dot(recip.b_vec, recip.b_vec)
-        ll = l_val * l_val * np.dot(recip.c_vec, recip.c_vec)
-        hk = 2 * h_val * k_val * np.dot(recip.a_vec, recip.b_vec)
-        hl = 2 * h_val * l_val * np.dot(recip.a_vec, recip.c_vec)
-        kl = 2 * k_val * l_val * np.dot(recip.b_vec, recip.c_vec)
-
-        return np.asarray((hh, kk, ll, hk, hl, kl))
-
     def toB(self):
         """Calculates the B-matrix with the assumption that this is the direct-space lattice"""
         reciprocal = self.reciprocal()
@@ -114,9 +90,20 @@ class Lattice:
         return np.asarray(matrix)
 
     def assert_allclose(self, other, atol=0.00001):
-        np.testing.assert_allclose(self.a_vec, other.a_vec, atol=atol)
-        np.testing.assert_allclose(self.b_vec, other.b_vec, atol=atol)
-        np.testing.assert_allclose(self.c_vec, other.c_vec, atol=atol)
+        # this is more consistent/understandable when looking at scalar constants
+        lattice_self = self.scalar_lattice_constants()
+        lattice_other = other.scalar_lattice_constants()
+
+        for me, you, label in zip(lattice_self, lattice_other, ["a", "b", "c", "alpha", "beta", "gamma"]):
+            np.testing.assert_allclose(me, you, atol=atol, err_msg=label)
+
+
+def get_angle_from_dot(dotprod: float, left_scalar: float, right_scalar: float) -> float:
+    cos_ang = 0.5 * dotprod / (left_scalar * right_scalar)
+    if np.isclose(cos_ang, 0.0):
+        return 90.0
+    else:
+        return np.rad2deg(np.arccos(cos_ang))
 
 
 class LatticeBuilder:
@@ -161,9 +148,9 @@ class LatticeBuilder:
         c_star = np.sqrt(solution[2])
 
         # get the angles
-        alpha_star = 90.0
-        beta_star = 90.0
-        gamma_star = 90.0
+        gamma_star = get_angle_from_dot(solution[3], a_star, b_star)
+        beta_star = get_angle_from_dot(solution[4], a_star, c_star)
+        alpha_star = get_angle_from_dot(solution[5], b_star, c_star)
 
         # create the reciprocal lattice
         recip = LatticeBuilder.construct_from_scalars(a_star, b_star, c_star, alpha_star, beta_star, gamma_star)

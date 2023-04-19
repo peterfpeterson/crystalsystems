@@ -17,5 +17,21 @@ def test_cubic(a):
     lattice.assert_allclose(obs)
 
 
+@pytest.mark.parametrize(("a", "c"), [(1, 1), (1, 2)])
+def test_hexagonal(a, c):
+    lattice = LatticeBuilder.construct_hexagonal(a, c)
+
+    # test array of hkl
+    hkl = [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 0], [1, 1, 2], [2, 2, 0], [1, 2, 3]]
+    # fake the observed Q-values
+    QcrysSq = [lattice.toQCrysSq(*vals) for vals in hkl]
+
+    obs = getLattice(hkl, QcrysSq)
+
+    print("LATTICE", obs.scalar_lattice_constants())
+
+    lattice.assert_allclose(obs)
+
+
 if __name__ == "__main__":
     pytest.main([__file__])
