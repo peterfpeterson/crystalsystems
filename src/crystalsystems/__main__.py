@@ -1,5 +1,9 @@
 import logging
 
+from crystalsystems import __version__
+from crystalsystems.cif import loadCIF
+from crystalsystems.lstsq import getLattice
+
 
 def main(args=None):
     """Underlying entrypoint for the backend.
@@ -15,6 +19,7 @@ def main(args=None):
         description="TODO",
         epilog="https://github.com/peterfpeterson/crystalsystems/",
     )
+    parser.add_argument("--version", action="store_true", help="Print version information and exit")
     parser.add_argument(
         "-l",
         "--log",
@@ -23,17 +28,30 @@ def main(args=None):
         choices=["debug", "info", "warn", "error"],
         help="The log level (default: %(default)s)",
     )
+    parser.add_argument("filename", nargs="?", type=argparse.FileType("r"), help="Name of CIF file to read in")
     # configure
     args = parser.parse_args(args)
 
-    # configure logging
-    logging.basicConfig()  # setup default handlers and formatting
-    # override log level
-    for handler in logging.getLogger().handlers:
-        handler.setLevel(args.log.upper())
-    logging.getLogger("crystalsystems")
+    if args.version:
+        print(__version__)
+        return 0
 
-    # TODO do stuff
+    # configure logging - setup default handlers and formatting
+    logging.basicConfig(level=args.log.upper())
+    logger = logging.getLogger("crystalsystems")
+
+    if args.filename:
+        lattice_exp, hkl, dSpacing = loadCIF(args.filename)
+        if lattice_exp:
+            logger.info(f"CIF file contained {lattice_exp}")
+
+        # find the lattice and output the result
+        lattice_obs = getLattice(hkl, dSpacing)
+        logger.info("Found lattice:")
+        logger.info(lattice_obs)
+    else:
+        # error out if file wasn't provided
+        parser.error("Failed to specify any work to do")
 
 
 if __name__ == "__main__":

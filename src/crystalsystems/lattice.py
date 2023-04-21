@@ -19,6 +19,10 @@ class Lattice:
 
         return is_ok(a_vec) and is_ok(b_vec) and is_ok(c_vec)
 
+    def __str__(self):
+        a_length, b_length, c_length, alpha, beta, gamma = self.scalar_lattice_constants()
+        return f"a={a_length} b={b_length} c={c_length} al={alpha} be={beta} ga={gamma}"
+
     def set_vectors(self, a_vec, b_vec, c_vec):
         if not Lattice.__vectors_are_valid(a_vec, b_vec, c_vec):
             raise ValueError("Vector values are invalid")
