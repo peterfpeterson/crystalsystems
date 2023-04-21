@@ -1,5 +1,6 @@
 import logging
 
+from crystalsystems import __version__
 from crystalsystems.cif import loadCIF
 from crystalsystems.lstsq import getLattice
 
@@ -18,6 +19,7 @@ def main(args=None):
         description="TODO",
         epilog="https://github.com/peterfpeterson/crystalsystems/",
     )
+    parser.add_argument("--version", action="store_true", help="Print version information and exit")
     parser.add_argument(
         "-l",
         "--log",
@@ -29,6 +31,10 @@ def main(args=None):
     parser.add_argument("filename", nargs="?", type=argparse.FileType("r"), help="Name of CIF file to read in")
     # configure
     args = parser.parse_args(args)
+
+    if args.version:
+        print(__version__)
+        return 0
 
     # configure logging - setup default handlers and formatting
     logging.basicConfig(level=args.log.upper())
