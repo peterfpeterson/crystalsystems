@@ -8,7 +8,7 @@ from crystalsystems.lattice import LatticeBuilder
 logger = logging.getLogger("crystalsystems.cif")
 
 
-def __split(handle):
+def _split(handle):
     header = []
     body = []
     inHeader = True
@@ -30,13 +30,14 @@ def __split(handle):
     return header, body
 
 
-def _readcrystalinfo(header):
+def _read_crystal_info(header):
     a_length = 0.0
     b_length = 0.0
     c_length = 0.0
     alpha = 0.0
     beta = 0.0
     gamma = 0.0
+    comment = ""
     for line in header:
         # pull off the comment marker
         if line.startswith("#"):
@@ -76,11 +77,21 @@ def _read_data(body):
     d_vals = []
 
     for line in body:
-        h_val, k_val, l_val, _, d_val = line.split()
-        h_vals.append(int(h_val))
-        k_vals.append(int(k_val))
-        l_vals.append(int(l_val))
-        d_vals.append(float(d_val))
+        if not line:  # skip empty lines
+            continue
+
+        try:
+            h_val, k_val, l_val, _, d_val = line.split()
+            h_vals.append(int(h_val))
+            k_vals.append(int(k_val))
+            l_vals.append(int(l_val))
+            d_vals.append(float(d_val))
+        except ValueError as e:
+            # log issues and carry on
+            logger.debug(f'While parsing "{line}" encountered: {e}')
+
+    if len(d_vals) == 0:
+        raise RuntimeError("Failed to read any data")
 
     d_vals = np.asarray(d_vals)
     hkl = np.array([h_vals, k_vals, l_vals])
@@ -88,8 +99,8 @@ def _read_data(body):
 
 
 def loadCIF(handle):
-    header, body = __split(handle)
-    lattice = _readcrystalinfo(header)
+    header, body = _split(handle)
+    lattice = _read_crystal_info(header)
     hkl, d_vals = _read_data(body)
 
     return lattice, hkl, d_vals
