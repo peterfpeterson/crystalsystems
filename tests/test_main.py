@@ -12,13 +12,15 @@ def test_version():
 
 
 def test_help():
-    with pytest.raises(SystemExit):
+    with pytest.raises(SystemExit) as e:
         main(["--help"])
+    assert e.value.code == 0
 
 
 def test_noargs():
-    with pytest.raises(SystemExit):
+    with pytest.raises(SystemExit) as e:
         main([])
+    assert e.value.code == 2
 
 
 if __name__ == "__main__":
