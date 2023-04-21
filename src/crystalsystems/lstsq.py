@@ -1,5 +1,6 @@
 import numpy as np
-from lattice import LatticeBuilder
+
+from crystalsystems.lattice import LatticeBuilder
 
 
 def toSolverConstants(h_val, k_val, l_val):
@@ -13,9 +14,11 @@ def toSolverConstants(h_val, k_val, l_val):
     return (hh, kk, ll, hk, hl, kl)
 
 
-def getLattice(hkl, qCrysSq):
+def getLattice(hkl, dSpacing):
     # convert the hkl to the values used by the least-squares solver
     inputs = np.asarray([toSolverConstants(*vals) for vals in hkl], dtype=float)
+
+    qCrysSq = 1.0 / np.square(dSpacing)
 
     # gets the solution up to a scale factor
     solution, residuals, rank, singular = np.linalg.lstsq(inputs, qCrysSq, rcond=None)

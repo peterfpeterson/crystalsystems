@@ -2,6 +2,7 @@
 Calculate the lattice constants from a set of observations
 
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/peterfpeterson/crystalsystems/main.svg)](https://results.pre-commit.ci/latest/github/peterfpeterson/crystalsystems/main)
+[![codecov](https://codecov.io/gh/peterfpeterson/crystalsystems/branch/main/graph/badge.svg?token=KCW0SIZ5Y8)](https://codecov.io/gh/peterfpeterson/crystalsystems)
 
 Developers
 ----------
@@ -10,4 +11,5 @@ Developers
 conda env create -f environment.yml
 conda activate crystalsystems
 pre-commit install
+pip install -e . # editable install
 ```

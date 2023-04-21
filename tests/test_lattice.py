@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.testing as nptest
 import pytest
-from lattice import LatticeBuilder
+from crystalsystems.lattice import LatticeBuilder
 
 
 def assert_dotprod(left, right, angle):
