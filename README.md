@@ -17,7 +17,7 @@ pip install -e . # editable install
 Notes
 -----
 
-From an [article about indexing from IUCr](https://onlinelibrary.wiley.com/iucr/itc/Ha/ch3o4v0001/#fd3o4o2)
+From an [International Tables Vol H chapter 3.4 (2019)](https://onlinelibrary.wiley.com/iucr/itc/Ha/ch3o4v0001/#fd3o4o2)
 
 * Cubic $Q=(h^2+k^2+l^2)A_{11}$
 * Tetragonal $Q=(h^2+k^2) A_{11}+l^2 A_{33}$
