@@ -1,4 +1,5 @@
 import pytest
+
 from crystalsystems.lattice import LatticeBuilder
 from crystalsystems.lstsq import getLattice
 

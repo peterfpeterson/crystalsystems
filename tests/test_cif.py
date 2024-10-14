@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+
 from crystalsystems.cif import _read_crystal_info, _read_data, _split
 
 DATA = """
