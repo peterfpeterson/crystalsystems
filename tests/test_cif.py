@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+
 from crystalsystems.cif import _read_crystal_info, _read_data, _split
 
 DATA = """
@@ -25,9 +26,7 @@ h   k   l   m    d_spacing
 1   1  -1   2    3.77900
 0   1   1   2    3.61223
 0   1  -2   2    3.56638
-""".split(
-    "\n"
-)
+""".split("\n")
 
 
 def test_split():
