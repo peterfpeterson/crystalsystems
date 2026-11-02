@@ -1,4 +1,5 @@
 import pytest
+
 from crystalsystems import __version__
 from crystalsystems.__main__ import main
 
