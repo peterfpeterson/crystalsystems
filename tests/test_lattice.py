@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.testing as nptest
 import pytest
+
 from crystalsystems.lattice import LatticeBuilder
 
 
